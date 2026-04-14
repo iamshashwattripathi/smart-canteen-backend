@@ -1,0 +1,86 @@
+version: '3.8'
+
+# Smart Canteen Billing System — Docker Compose
+# Works on Windows, macOS, Linux, and Android (via Termux + Docker)
+#
+# Usage:
+#   1. Set your Claude API key:
+#      Windows:  set CLAUDE_API_KEY=sk-ant-...
+#      macOS/Linux: export CLAUDE_API_KEY=sk-ant-...
+#
+#   2. Start everything:
+#      docker-compose up --build
+#
+#   3. App runs at: http://localhost:8080
+#      API docs:    http://localhost:8080/api
+
+services:
+
+  # ── MySQL 8 Database ──────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: canteen-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: canteen123
+      MYSQL_DATABASE: smart_canteen
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pcanteen123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - canteen-net
+
+  # ── Spring Boot Backend ───────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: canteen-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      # Database (points to the mysql service above)
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/smart_canteen?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: canteen123
+
+      # JWT
+      APP_JWT_SECRET: SmartCanteenSecretKey2025UCERPrayagraj
+      APP_JWT_EXPIRATION_MS: "604800000"
+
+      # AI Chatbot — set CLAUDE_API_KEY in your shell environment
+      APP_AI_CHATBOT_API_KEY: ${CLAUDE_API_KEY:-your_claude_api_key_here}
+      APP_AI_CHATBOT_MODEL: claude-haiku-4-5-20251001
+
+      # Business config
+      APP_GST_RATE: "5"
+      APP_QUEUE_AVG_PREP_TIME_MINUTES: "3"
+      APP_CORS_ALLOWED_ORIGINS: "*"
+
+      # JPA
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "false"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - canteen-net
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  canteen-net:
+    driver: bridge
