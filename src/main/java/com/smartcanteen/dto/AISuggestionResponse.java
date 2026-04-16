@@ -2,8 +2,9 @@ package com.smartcanteen.dto;
 
 import lombok.*;
 
-@Data @Builder
+@Data
+@Builder
 public class AISuggestionResponse {
-    private String recommendedItem;
-    private String basis;
+	private String recommendedItem;
+	private String basis;
 }

@@ -15,42 +15,39 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MenuService {
 
-    private final MenuItemRepository menuItemRepository;
-    private final StallRepository    stallRepository;
+	private final MenuItemRepository menuItemRepository;
+	private final StallRepository stallRepository;
 
-    /** All available items, grouped by category — powers the frontend menu page */
-    public Map<String, List<MenuItem>> getMenuGroupedByCategory() {
-        return menuItemRepository.findByAvailableTrue()
-                .stream()
-                .collect(Collectors.groupingBy(MenuItem::getCategory));
-    }
+	/** All available items, grouped by category — powers the frontend menu page */
+	public Map<String, List<MenuItem>> getMenuGroupedByCategory() {
+		return menuItemRepository.findByAvailableTrue().stream().collect(Collectors.groupingBy(MenuItem::getCategory));
+	}
 
-    public List<MenuItem> getAllAvailable() {
-        return menuItemRepository.findByAvailableTrue();
-    }
+	public List<MenuItem> getAllAvailable() {
+		return menuItemRepository.findByAvailableTrue();
+	}
 
-    public MenuItem getById(Long id) {
-        return menuItemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Menu item not found: " + id));
-    }
+	public MenuItem getById(Long id) {
+		return menuItemRepository.findById(id).orElseThrow(() -> new RuntimeException("Menu item not found: " + id));
+	}
 
-    /** Admin: add new item */
-    public MenuItem save(MenuItem item) {
-        return menuItemRepository.save(item);
-    }
+	/** Admin: add new item */
+	public MenuItem save(MenuItem item) {
+		return menuItemRepository.save(item);
+	}
 
-    /** Admin: toggle availability */
-    public MenuItem toggleAvailability(Long id) {
-        MenuItem item = getById(id);
-        item.setAvailable(!item.isAvailable());
-        return menuItemRepository.save(item);
-    }
+	/** Admin: toggle availability */
+	public MenuItem toggleAvailability(Long id) {
+		MenuItem item = getById(id);
+		item.setAvailable(!item.isAvailable());
+		return menuItemRepository.save(item);
+	}
 
-    public void delete(Long id) {
-        menuItemRepository.deleteById(id);
-    }
+	public void delete(Long id) {
+		menuItemRepository.deleteById(id);
+	}
 
-    public List<Stall> getAllStalls() {
-        return stallRepository.findAll();
-    }
+	public List<Stall> getAllStalls() {
+		return stallRepository.findAll();
+	}
 }

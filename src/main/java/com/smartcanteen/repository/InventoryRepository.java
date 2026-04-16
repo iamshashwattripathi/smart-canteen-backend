@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
-    @Query("SELECT i FROM Inventory i WHERE i.stockQuantity <= i.lowStockThreshold")
-    List<Inventory> findLowStockItems();
+	@Query("SELECT i FROM Inventory i WHERE i.stockQuantity <= i.lowStockThreshold")
+	List<Inventory> findLowStockItems();
 }

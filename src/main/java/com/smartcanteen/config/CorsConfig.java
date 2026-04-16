@@ -12,29 +12,29 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
-    @Value("${app.cors.allowed-origins:*}")
-    private String allowedOrigins;
+	@Value("${app.cors.allowed-origins:*}")
+	private String allowedOrigins;
 
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
+	@Bean
+	public CorsFilter corsFilter() {
+		CorsConfiguration config = new CorsConfiguration();
 
-        if ("*".equals(allowedOrigins)) {
-            config.addAllowedOriginPattern("*");
-        } else {
-            for (String origin : allowedOrigins.split(",")) {
-                config.addAllowedOrigin(origin.trim());
-            }
-        }
+		if ("*".equals(allowedOrigins)) {
+			config.addAllowedOriginPattern("*");
+		} else {
+			for (String origin : allowedOrigins.split(",")) {
+				config.addAllowedOrigin(origin.trim());
+			}
+		}
 
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setExposedHeaders(List.of("Authorization"));
-        config.setAllowCredentials(false);
-        config.setMaxAge(3600L);
+		config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+		config.setAllowedHeaders(List.of("*"));
+		config.setExposedHeaders(List.of("Authorization"));
+		config.setAllowCredentials(false);
+		config.setMaxAge(3600L);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+		return new CorsFilter(source);
+	}
 }

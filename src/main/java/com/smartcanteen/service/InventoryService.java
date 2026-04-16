@@ -11,39 +11,34 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InventoryService {
 
-    private final InventoryRepository inventoryRepository;
+	private final InventoryRepository inventoryRepository;
 
-    public List<Inventory> getAll() {
-        return inventoryRepository.findAll();
-    }
+	public List<Inventory> getAll() {
+		return inventoryRepository.findAll();
+	}
 
-    public List<Inventory> getLowStockItems() {
-        return inventoryRepository.findLowStockItems();
-    }
+	public List<Inventory> getLowStockItems() {
+		return inventoryRepository.findLowStockItems();
+	}
 
-    /** Add or update a raw material stock entry */
-    public Inventory saveOrUpdate(String materialName, int quantity, String unit, int threshold) {
-        // Check if material already exists
-        return inventoryRepository.findAll().stream()
-                .filter(i -> i.getMaterialName().equalsIgnoreCase(materialName))
-                .findFirst()
-                .map(existing -> {
-                    existing.setStockQuantity(quantity);
-                    if (unit     != null) existing.setUnit(unit);
-                    if (threshold > 0)   existing.setLowStockThreshold(threshold);
-                    return inventoryRepository.save(existing);
-                })
-                .orElseGet(() -> inventoryRepository.save(
-                        Inventory.builder()
-                                .materialName(materialName)
-                                .stockQuantity(quantity)
-                                .unit(unit != null ? unit : "units")
-                                .lowStockThreshold(threshold > 0 ? threshold : 5)
-                                .build()
-                ));
-    }
+	/** Add or update a raw material stock entry */
+	public Inventory saveOrUpdate(String materialName, int quantity, String unit, int threshold) {
+		// Check if material already exists
+		return inventoryRepository.findAll().stream().filter(i -> i.getMaterialName().equalsIgnoreCase(materialName))
+				.findFirst().map(existing -> {
+					existing.setStockQuantity(quantity);
+					if (unit != null)
+						existing.setUnit(unit);
+					if (threshold > 0)
+						existing.setLowStockThreshold(threshold);
+					return inventoryRepository.save(existing);
+				})
+				.orElseGet(() -> inventoryRepository.save(Inventory.builder().materialName(materialName)
+						.stockQuantity(quantity).unit(unit != null ? unit : "units")
+						.lowStockThreshold(threshold > 0 ? threshold : 5).build()));
+	}
 
-    public void delete(Long id) {
-        inventoryRepository.deleteById(id);
-    }
+	public void delete(Long id) {
+		inventoryRepository.deleteById(id);
+	}
 }

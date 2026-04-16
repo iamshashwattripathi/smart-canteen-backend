@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface TokenRepository extends JpaRepository<Token, Long> {
 
-    @Query("SELECT MAX(t.tokenNumber) FROM Token t WHERE DATE(t.issuedAt) = CURRENT_DATE")
-    Optional<Integer> findMaxTokenToday();
+	@Query("SELECT MAX(t.tokenNumber) FROM Token t WHERE DATE(t.issuedAt) = CURRENT_DATE")
+	Optional<Integer> findMaxTokenToday();
 
-    long countByStatus(TokenStatus status);
+	long countByStatus(TokenStatus status);
 }

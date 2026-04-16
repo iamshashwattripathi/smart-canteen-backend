@@ -13,35 +13,42 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity @Table(name = "users")
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password"})
+@Entity
+@Table(name = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "password" })
 public class User {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+	@Column(nullable = false, length = 100)
+	private String name;
 
-    @Column(nullable = false, unique = true, length = 150)
-    private String email;
+	@Column(nullable = false, unique = true, length = 150)
+	private String email;
 
-    @Column(nullable = false)
-    private String password;
+	@Column(nullable = false)
+	private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private Role role = Role.CUSTOMER;
+	@Enumerated(EnumType.STRING)
+	@Column(length = 20)
+	private Role role = Role.CUSTOMER;
 
-    @Column(length = 15)
-    private String phone;
+	@Column(length = 15)
+	private String phone;
 
-    @Column(name = "wallet_balance", precision = 10, scale = 2)
-    private BigDecimal walletBalance = BigDecimal.ZERO;
+	@Column(name = "wallet_balance", precision = 10, scale = 2)
+	private BigDecimal walletBalance = BigDecimal.ZERO;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+	@Column(name = "created_at")
+	private LocalDateTime createdAt = LocalDateTime.now();
 
-    public enum Role { CUSTOMER, ADMIN, STAFF }
+	public enum Role {
+		CUSTOMER, ADMIN, STAFF
+	}
 }

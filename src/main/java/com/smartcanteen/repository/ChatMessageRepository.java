@@ -8,7 +8,8 @@ import java.util.List;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
-    List<ChatMessage> findBySessionIdOrderByCreatedAtAsc(String sessionId);
-    // Keep only the last N messages per session to avoid unbounded context
-    List<ChatMessage> findTop20BySessionIdOrderByCreatedAtAsc(String sessionId);
+	List<ChatMessage> findBySessionIdOrderByCreatedAtAsc(String sessionId);
+
+	// Keep only the last N messages per session to avoid unbounded context
+	List<ChatMessage> findTop20BySessionIdOrderByCreatedAtAsc(String sessionId);
 }
